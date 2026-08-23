@@ -49,6 +49,17 @@
             width: 100%;
             box-sizing: border-box;
         }
+        
+        .auto-detect-badge {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
 
         select, .btn-group button { 
             font-size: 16px; 
@@ -139,9 +150,11 @@
 <div class="container">
     
     <div class="current-time-box">
+        <div id="autoDetectBadge" class="auto-detect-badge">ダイヤ自動判定中</div><br>
         🕒 現在時刻: <span id="currentTime">--:--:--</span>
     </div>
 
+    <!-- 手動切り替えボタンも残しておく（明日の予定を見たい時用） -->
     <div class="btn-group">
         <button id="btn-weekday" class="active" onclick="setScheduleType('weekday')">平日ダイヤ</button>
         <button id="btn-holiday" onclick="setScheduleType('holiday')">土日祝ダイヤ</button>
@@ -230,15 +243,54 @@
         }
     };
 
+    // === カレンダー設定（自動判別用） ===
+    // 祝日の日付を指定 (YYYY-MM-DD形式)
+    const publicHolidays = [
+        "2026-09-21", "2026-09-22", "2026-09-23", 
+        "2026-10-12", "2026-11-03", "2026-11-23"
+    ];
+    // 特別ダイヤになる日付を指定 (例：夏休み、学園祭など)
+    const specialDays = [
+        "2026-08-24", "2026-08-25"
+    ];
+
     let currentScheduleType = 'weekday';
+    let isAutoDetected = true; // 初回は自動判定フラグをON
+
+    function autoDetectSchedule() {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const dateString = `${yyyy}-${mm}-${dd}`;
+        const dayOfWeek = now.getDay(); // 0:日, 1:月...6:土
+
+        let determinedType = 'weekday';
+
+        if (specialDays.includes(dateString)) {
+            determinedType = 'special';
+        } else if (publicHolidays.includes(dateString) || dayOfWeek === 0 || dayOfWeek === 6) {
+            determinedType = 'holiday';
+        }
+
+        // 画面のボタン表示を更新
+        updateButtonStyles(determinedType);
+        currentScheduleType = determinedType;
+    }
 
     function setScheduleType(type) {
         currentScheduleType = type;
+        isAutoDetected = false; // 手動で切り替えたら自動判定ラベルを隠す
+        document.getElementById('autoDetectBadge').style.display = 'none';
+        updateButtonStyles(type);
+        updateSchedule();
+    }
+
+    function updateButtonStyles(type) {
         document.getElementById('btn-weekday').classList.remove('active');
         document.getElementById('btn-holiday').classList.remove('active');
         document.getElementById('btn-special').classList.remove('active');
         document.getElementById('btn-' + type).classList.add('active');
-        updateSchedule();
     }
 
     function updateClock() {
@@ -293,6 +345,8 @@
         document.getElementById("followingBus").innerText = following;
     }
 
+    // 初期化処理
+    autoDetectSchedule();
     updateClock();
     setInterval(updateClock, 1000);
     updateSchedule();
