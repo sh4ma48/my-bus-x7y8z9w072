@@ -239,13 +239,107 @@
                 "17:05", "17:25", "17:45",
                 "18:05"
             ]
+        },
+        '特別ダイヤ1': {
+            otakanomori: [
+                "08:10", "08:30", "08:35", "08:40", "08:50", "08:55",
+                "09:00", "09:10", "09:15", "09:20", "09:30", "09:35", "09:40", "09:50", "09:55",
+                "10:15", "10:35", "10:55",
+                "11:15", "11:35", "11:55",
+                "12:10", "12:30", "12:40", "12:50",
+                "13:00", "13:10", "13:20", "13:30", "13:35", "13:50", "13:55",
+                "14:15", "14:35", "14:50",
+                "15:10", "15:30",
+                "16:10", "16:30", "16:50",
+                "17:10", "17:30", "17:50"
+            ],
+            edogawa: [
+                "08:20", "08:40", "08:45",
+                "09:00", "09:05", "09:20", "09:25", "09:40", "09:45",
+                "10:05", "10:25", "10:45",
+                "11:05", "11:25", "11:45",
+                "12:20", "12:30", "12:40", "12:50",
+                "13:00", "13:10", "13:20", "13:25", "13:40", "13:45",
+                "14:05", "14:25", "14:45",
+                "15:20",
+                "16:00", "16:10", "16:20", "16:30", "16:40", "16:50",
+                "17:00", "17:20", "17:40"
+            ]
+        },
+        '特別ダイヤ2': {
+            otakanomori: [
+                "09:35",
+                "11:50",
+                "12:10", "12:30", "12:50",
+                "17:20", "17:40",
+                "18:00", "18:20", "18:40"
+            ],
+            edogawa: [
+                "12:00", "12:20", "12:40",
+                "17:10", "17:30", "17:50",
+                "18:10", "18:30", "18:50",
+                "19:10", "19:30"
+            ]
+        },
+        '特別ダイヤ3': {
+            otakanomori: [
+                "08:10", "08:25", "08:45",
+                "09:15", "09:35",
+                "10:00", "10:20", "10:40",
+                "11:00", "11:50",
+                "12:10", "12:40",
+                "13:00",
+                "14:20", "14:40",
+                "15:00", "15:20", "15:40",
+                "16:10", "16:30",
+                "17:00", "17:20", "17:50"
+            ],
+            edogawa: [
+                "08:35",
+                "09:05", "09:25", "09:50",
+                "10:10", "10:30", "10:50",
+                "11:40",
+                "12:00", "12:30", "12:50",
+                "14:10", "14:30", "14:50",
+                "15:10", "15:30",
+                "16:00", "16:20", "16:50",
+                "17:10", "17:40",
+                "18:20", "18:45",
+                "19:00"
+            ]
+        },
+        '特別ダイヤ4': {
+            otakanomori: [
+                "08:10", "08:25", "08:45",
+                "09:05", "09:15", "09:25", "09:35", "09:50",
+                "10:00", "10:20", "10:40",
+                "11:00", "11:50",
+                "12:00", "12:10", "12:20", "12:40", "12:50",
+                "13:00", "13:20",
+                "14:20", "14:40",
+                "15:00", "15:20", "15:40",
+                "16:10", "16:30",
+                "17:00", "17:20", "17:50"
+            ],
+            edogawa: [
+                "08:35",
+                "09:05", "09:25", "09:50",
+                "10:10", "10:30", "10:50",
+                "11:40",
+                "12:00", "12:10", "12:30", "12:40", "12:50",
+                "13:10", "13:30",
+                "14:10", "14:30", "14:50",
+                "15:10", "15:30",
+                "16:00", "16:20", "16:50",
+                "17:10", "17:40",
+                "18:20", "18:45",
+                "19:00"
+            ]
         }
     };
 
     let currentScheduleType = '';
     let isServiceSuspended = false;
-    let isSpecialSchedule = false;
-    let specialScheduleName = '';
 
     // === カレンダー設定 ===
     const scheduleCalendar = {
@@ -281,11 +375,8 @@
         const badge = document.getElementById('autoDetectBadge');
         
         isServiceSuspended = false;
-        isSpecialSchedule = false;
-        specialScheduleName = '';
 
         if (!determinedType) {
-             // カレンダーにない日は仮にAダイヤとするか、運用に合わせて変更
              determinedType = "Aダイヤ (予定表外)";
              currentScheduleType = 'Aダイヤ';
              badge.innerText = `本日は ${determinedType}`;
@@ -294,16 +385,16 @@
              isServiceSuspended = true;
              badge.innerText = "本日は 運休 です";
              badge.style.backgroundColor = "#dc3545";
-        } else if (determinedType.includes("特別ダイヤ")) {
-             isSpecialSchedule = true;
-             specialScheduleName = determinedType;
-             badge.innerText = `本日は ${determinedType}（時刻未登録）`;
-             badge.style.backgroundColor = "#ffc107";
-             badge.style.color = "#212529";
         } else {
              currentScheduleType = determinedType;
              badge.innerText = `本日は ${determinedType}`;
-             badge.style.backgroundColor = "#28a745";
+             if (determinedType.includes("特別")) {
+                 badge.style.backgroundColor = "#ffc107";
+                 badge.style.color = "#212529";
+             } else {
+                 badge.style.backgroundColor = "#28a745";
+                 badge.style.color = "white";
+             }
         }
     }
 
@@ -320,13 +411,6 @@
             document.getElementById("nextBus").innerText = "運休";
             document.getElementById("followingBus").innerText = "-";
             document.getElementById("countdown").innerText = "";
-            return;
-        }
-        
-        if (isSpecialSchedule) {
-            document.getElementById("nextBus").innerText = "公式HP確認";
-            document.getElementById("followingBus").innerText = "-";
-            document.getElementById("countdown").innerText = specialScheduleName;
             return;
         }
 
