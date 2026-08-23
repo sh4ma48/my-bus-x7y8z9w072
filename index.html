@@ -88,6 +88,14 @@
             background-color: #0056b3;
             color: white;
         }
+        
+        /* 追加：選択不可になったボタンの見た目 */
+        .btn-group button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background-color: #ddd;
+            color: #888;
+        }
 
         .time-box { 
             margin: 15px 0; 
@@ -241,7 +249,7 @@
 
     // === カレンダー設定（自動判別用） ===
     
-    // 休日扱いになる日付 (授業なし・事務局閉鎖・祝日など)
+    // 休日扱いになる日付
     const publicHolidays = [
         "2026-04-30", "2026-05-04", "2026-05-05", "2026-05-06",
         "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18",
@@ -252,7 +260,7 @@
         "2027-02-11", "2027-02-23", "2027-03-22"
     ];
     
-    // 特別ダイヤ扱いになる日付 (定期試験・集中講義・学園祭など)
+    // 特別ダイヤ扱いになる日付
     const specialDays = [
         "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30",
         "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10",
@@ -269,7 +277,7 @@
         const mm = String(now.getMonth() + 1).padStart(2, '0');
         const dd = String(now.getDate()).padStart(2, '0');
         const dateString = `${yyyy}-${mm}-${dd}`;
-        const dayOfWeek = now.getDay(); // 0:日, 1:月...6:土
+        const dayOfWeek = now.getDay();
 
         let determinedType = 'weekday';
 
@@ -279,23 +287,29 @@
             determinedType = 'holiday';
         }
 
-        // 画面のボタン表示を更新
         updateButtonStyles(determinedType);
         currentScheduleType = determinedType;
     }
 
     function setScheduleType(type) {
+        // ※自動判別により他のボタンが押せなくなったため、この関数は実質呼ばれませんが残しています
         currentScheduleType = type;
-        document.getElementById('autoDetectBadge').style.display = 'none';
         updateButtonStyles(type);
         updateSchedule();
     }
 
     function updateButtonStyles(type) {
-        document.getElementById('btn-weekday').classList.remove('active');
-        document.getElementById('btn-holiday').classList.remove('active');
-        document.getElementById('btn-special').classList.remove('active');
-        document.getElementById('btn-' + type).classList.add('active');
+        const types = ['weekday', 'holiday', 'special'];
+        types.forEach(t => {
+            const btn = document.getElementById('btn-' + t);
+            if (t === type) {
+                btn.classList.add('active');
+                btn.disabled = false; // 選ばれているものは有効
+            } else {
+                btn.classList.remove('active');
+                btn.disabled = true;  // それ以外はクリック不可にする
+            }
+        });
     }
 
     function updateClock() {
