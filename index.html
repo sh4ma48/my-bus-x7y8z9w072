@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 検索エンジン避けのタグを追加 -->
     <meta name="robots" content="noindex, nofollow">
     <title>江戸川大学シャトルバス時刻表</title>
-    <!-- PWA用の設定 -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0056b3">
     <link rel="apple-touch-icon" href="icon-192x192.png">
@@ -138,7 +136,6 @@
             font-size: 12px;
             color: #888;
         }
-
     </style>
 </head>
 <body>
@@ -154,7 +151,6 @@
         🕒 現在時刻: <span id="currentTime">--:--:--</span>
     </div>
 
-    <!-- 手動切り替えボタンも残しておく（明日の予定を見たい時用） -->
     <div class="btn-group">
         <button id="btn-weekday" class="active" onclick="setScheduleType('weekday')">平日ダイヤ</button>
         <button id="btn-holiday" onclick="setScheduleType('holiday')">土日祝ダイヤ</button>
@@ -244,18 +240,28 @@
     };
 
     // === カレンダー設定（自動判別用） ===
-    // 祝日の日付を指定 (YYYY-MM-DD形式)
+    
+    // 休日扱いになる日付 (授業なし・事務局閉鎖・祝日など)
     const publicHolidays = [
-        "2026-09-21", "2026-09-22", "2026-09-23", 
-        "2026-10-12", "2026-11-03", "2026-11-23"
+        "2026-04-30", "2026-05-04", "2026-05-05", "2026-05-06",
+        "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18",
+        "2026-09-21", "2026-09-22", "2026-09-23",
+        "2026-11-04", "2026-11-06",
+        "2026-12-29", "2026-12-30", "2026-12-31",
+        "2027-01-01", "2027-01-04", "2027-01-11",
+        "2027-02-11", "2027-02-23", "2027-03-22"
     ];
-    // 特別ダイヤになる日付を指定 (例：夏休み、学園祭など)
+    
+    // 特別ダイヤ扱いになる日付 (定期試験・集中講義・学園祭など)
     const specialDays = [
-        "2026-08-24", "2026-08-25"
+        "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30",
+        "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10",
+        "2026-11-02", "2026-11-03",
+        "2027-01-19", "2027-01-20", "2027-01-21", "2027-01-22", "2027-01-25",
+        "2027-01-26", "2027-01-27", "2027-01-28"
     ];
 
     let currentScheduleType = 'weekday';
-    let isAutoDetected = true; // 初回は自動判定フラグをON
 
     function autoDetectSchedule() {
         const now = new Date();
@@ -280,7 +286,6 @@
 
     function setScheduleType(type) {
         currentScheduleType = type;
-        isAutoDetected = false; // 手動で切り替えたら自動判定ラベルを隠す
         document.getElementById('autoDetectBadge').style.display = 'none';
         updateButtonStyles(type);
         updateSchedule();
@@ -345,7 +350,6 @@
         document.getElementById("followingBus").innerText = following;
     }
 
-    // 初期化処理
     autoDetectSchedule();
     updateClock();
     setInterval(updateClock, 1000);
