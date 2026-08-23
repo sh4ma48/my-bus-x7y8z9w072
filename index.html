@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 検索エンジン避けのタグを追加 -->
+    <meta name="robots" content="noindex, nofollow">
     <title>江戸川大学シャトルバス時刻表</title>
     <!-- PWA用の設定 -->
     <link rel="manifest" href="manifest.json">
@@ -136,7 +138,6 @@
 
 <div class="container">
     
-    <!-- 現在時刻の表示を追加 -->
     <div class="current-time-box">
         🕒 現在時刻: <span id="currentTime">--:--:--</span>
     </div>
@@ -240,7 +241,6 @@
         updateSchedule();
     }
 
-    // 現在時刻をリアルタイムで表示する関数
     function updateClock() {
         const now = new Date();
         const h = String(now.getHours()).padStart(2, '0');
@@ -293,11 +293,8 @@
         document.getElementById("followingBus").innerText = following;
     }
 
-    // 時計の初期表示と1秒ごとの更新
     updateClock();
     setInterval(updateClock, 1000);
-
-    // 時刻表の初期表示と1分ごとの自動更新
     updateSchedule();
     setInterval(updateSchedule, 60000);
     
