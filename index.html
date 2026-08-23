@@ -52,14 +52,14 @@
             display: inline-block;
             background-color: #28a745;
             color: white;
-            font-size: 12px;
-            padding: 4px 8px;
+            font-size: 14px;
+            padding: 6px 12px;
             border-radius: 4px;
             margin-bottom: 10px;
-            font-weight: normal;
+            font-weight: bold;
         }
 
-        select, .btn-group button { 
+        select { 
             font-size: 16px; 
             padding: 12px; 
             width: 100%; 
@@ -68,33 +68,6 @@
             border-radius: 8px; 
             background-color: #fff;
             box-sizing: border-box;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .btn-group button {
-            margin-bottom: 0;
-            background-color: #e9ecef;
-            border: none;
-            color: #495057;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-group button.active {
-            background-color: #0056b3;
-            color: white;
-        }
-        
-        /* 追加：選択不可になったボタンの見た目 */
-        .btn-group button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            background-color: #ddd;
-            color: #888;
         }
 
         .time-box { 
@@ -155,14 +128,8 @@
 <div class="container">
     
     <div class="current-time-box">
-        <div id="autoDetectBadge" class="auto-detect-badge">ダイヤ自動判定中</div><br>
+        <div id="autoDetectBadge" class="auto-detect-badge">ダイヤ自動判定中...</div><br>
         🕒 現在時刻: <span id="currentTime">--:--:--</span>
-    </div>
-
-    <div class="btn-group">
-        <button id="btn-weekday" class="active" onclick="setScheduleType('weekday')">平日ダイヤ</button>
-        <button id="btn-holiday" onclick="setScheduleType('holiday')">土日祝ダイヤ</button>
-        <button id="btn-special" onclick="setScheduleType('special')">特別ダイヤ</button>
     </div>
 
     <select id="routeSelect" onchange="updateSchedule()">
@@ -189,87 +156,118 @@
 <script>
     // === 時刻表データ ===
     const schedules = {
-        weekday: {
+        'Aダイヤ': {
             otakanomori: [
-                "07:50", "08:10", "08:30", "08:35", "08:50", "08:55", 
-                "09:10", "09:15", "09:30", "09:35", "09:50", "09:55", 
-                "10:10", "10:15", "10:30", "10:35", "10:55", 
-                "11:10", "11:30", "11:50", 
-                "12:10", "12:30", "12:50", 
-                "13:10", "13:30", "13:50", 
-                "14:10", "14:30", "14:50", 
-                "15:10", "15:30", "15:50", 
-                "16:10", "16:20", "16:40", "16:50", 
-                "17:10", "17:20", "17:40", 
-                "18:00", "18:20", "18:40", 
-                "19:00", "19:30", 
-                "20:00", "20:30", "21:00"
+                "08:00", "08:10", "08:15", "08:20", "08:25", "08:30", "08:35", "08:40", "08:45", "08:50", "08:55",
+                "09:00", "09:05", "09:15", "09:35", "09:55",
+                "10:05", "10:10", "10:15", "10:25", "10:30", "10:35", "10:45", "10:50", "10:55",
+                "11:05", "11:25", "11:45",
+                "12:05", "12:25", "12:35", "12:45", "12:55",
+                "13:15", "13:35", "13:55",
+                "14:15", "14:25", "14:35", "14:45", "14:55",
+                "15:05", "15:15", "15:25", "15:45",
+                "16:05", "16:25", "16:35", "16:45", "16:55",
+                "17:05", "17:15", "17:40",
+                "18:00", "18:20", "18:40", "18:50",
+                "19:10", "19:30", "19:50",
+                "20:10", "20:30"
             ],
             edogawa: [
-                "08:00", "08:20", "08:40", "08:45", "09:00", "09:05", 
-                "09:20", "09:25", "09:40", "09:45", "10:00", "10:05", 
-                "10:20", "10:25", "10:45", 
-                "11:00", "11:20", "11:40", 
-                "12:00", "12:20", "12:40", 
-                "13:00", "13:20", "13:40", 
-                "14:00", "14:20", "14:40", 
-                "15:00", "15:20", "15:40", 
-                "16:00", "16:10", "16:30", "16:40", 
-                "17:00", "17:10", "17:30", "17:50", 
-                "18:10", "18:30", "18:50", 
-                "19:10", "19:40", 
-                "20:10", "20:40", "21:10"
+                "08:10", "08:20", "08:25", "08:30", "08:35", "08:40", "08:45", "08:50", "08:55",
+                "09:05", "09:25", "09:45",
+                "10:05", "10:15", "10:20", "10:25", "10:35", "10:40", "10:45", "10:55",
+                "11:15", "11:35", "11:55",
+                "12:15", "12:25", "12:35", "12:45", "12:55",
+                "13:05", "13:25", "13:45",
+                "14:05", "14:15", "14:25", "14:35", "14:45", "14:55",
+                "15:05", "15:15", "15:25", "15:35", "15:55",
+                "16:15", "16:25", "16:35", "16:45", "16:55",
+                "17:05", "17:15", "17:30", "17:50",
+                "18:10", "18:30", "18:40", "18:50",
+                "19:00", "19:20", "19:40",
+                "20:00", "20:20", "20:40"
             ]
         },
-        holiday: { 
+        'Bダイヤ': {
             otakanomori: [
-                "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-                "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00",
-                "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"
+                "08:05", "08:20", "08:40",
+                "09:15", "09:35",
+                "10:00", "10:20", "10:40",
+                "12:10", "12:40",
+                "13:00",
+                "14:30", "14:50",
+                "15:10", "15:40",
+                "16:00", "16:20",
+                "17:00", "17:30"
             ],
             edogawa: [
-                "08:45", "09:15", "09:45", "10:15", "10:45", "11:15", "11:45",
-                "12:15", "12:45", "13:15", "13:45", "14:15", "14:45", "15:15",
-                "15:45", "16:15", "16:45", "17:15", "17:45", "18:15"
+                "08:30",
+                "09:05", "09:25", "09:50",
+                "10:10", "10:30",
+                "12:00", "12:30", "12:50",
+                "13:10",
+                "14:20", "14:40",
+                "15:00", "15:30", "15:50",
+                "16:10", "16:50",
+                "17:20", "17:40",
+                "18:00", "18:40"
             ]
         },
-        special: { 
+        'Cダイヤ': {
             otakanomori: [
-                "08:10", "08:30", "08:50", "09:10", "09:30", "10:00", "10:30",
-                "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "16:30",
-                "17:00", "17:30", "18:00"
+                "08:10", "08:30", "08:35", "08:50", "08:55",
+                "09:10", "09:15", "09:30", "09:35", "09:50", "09:55",
+                "10:10", "10:15", "10:30", "10:35", "10:55",
+                "11:15", "11:35", "11:55",
+                "12:10", "12:30", "12:50",
+                "13:10", "13:30", "13:35", "13:50", "13:55",
+                "14:10", "14:15", "14:30", "14:35", "14:50",
+                "15:10", "15:30", "15:55",
+                "16:15", "16:35", "16:55",
+                "17:15", "17:35", "17:55"
             ],
             edogawa: [
-                 "08:20", "08:40", "09:00", "09:20", "09:40", "10:15", "10:45",
-                 "11:15", "12:15", "13:15", "14:15", "15:15", "16:15", "16:45",
-                 "17:15", "17:45", "18:15"
+                "08:20", "08:40", "08:45",
+                "09:00", "09:05", "09:20", "09:25", "09:40", "09:45",
+                "10:00", "10:05", "10:20", "10:25", "10:45",
+                "11:05", "11:25", "11:45",
+                "12:00", "12:20", "12:40",
+                "13:00", "13:20", "13:25", "13:40", "13:45",
+                "14:00", "14:05", "14:20", "14:25", "14:40", "14:45",
+                "15:00", "15:20", "15:45",
+                "16:05", "16:25", "16:45",
+                "17:05", "17:25", "17:45",
+                "18:05"
             ]
         }
     };
 
-    // === カレンダー設定（自動判別用） ===
-    
-    // 休日扱いになる日付
-    const publicHolidays = [
-        "2026-04-30", "2026-05-04", "2026-05-05", "2026-05-06",
-        "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18",
-        "2026-09-21", "2026-09-22", "2026-09-23",
-        "2026-11-04", "2026-11-06",
-        "2026-12-29", "2026-12-30", "2026-12-31",
-        "2027-01-01", "2027-01-04", "2027-01-11",
-        "2027-02-11", "2027-02-23", "2027-03-22"
-    ];
-    
-    // 特別ダイヤ扱いになる日付
-    const specialDays = [
-        "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30",
-        "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10",
-        "2026-11-02", "2026-11-03",
-        "2027-01-19", "2027-01-20", "2027-01-21", "2027-01-22", "2027-01-25",
-        "2027-01-26", "2027-01-27", "2027-01-28"
-    ];
+    let currentScheduleType = '';
+    let isServiceSuspended = false;
+    let isSpecialSchedule = false;
+    let specialScheduleName = '';
 
-    let currentScheduleType = 'weekday';
+    // === カレンダー設定 ===
+    const scheduleCalendar = {
+        "2026-08-01": "特別ダイヤ1", "2026-08-02": "特別ダイヤ1", "2026-08-03": "特別ダイヤ4", 
+        "2026-08-04": "特別ダイヤ3", "2026-08-05": "特別ダイヤ3", "2026-08-06": "特別ダイヤ3", "2026-08-07": "特別ダイヤ3",
+        "2026-08-08": "Bダイヤ", "2026-08-09": "運休", "2026-08-10": "特別ダイヤ3",
+        "2026-08-11": "運休", "2026-08-12": "運休", "2026-08-13": "運休", "2026-08-14": "運休", 
+        "2026-08-15": "運休", "2026-08-16": "運休", "2026-08-17": "運休",
+        "2026-08-18": "Bダイヤ", "2026-08-19": "Bダイヤ", "2026-08-20": "Bダイヤ", "2026-08-21": "Bダイヤ",
+        "2026-08-22": "特別ダイヤ1", "2026-08-23": "特別ダイヤ1",
+        "2026-08-24": "Bダイヤ", "2026-08-25": "Bダイヤ", "2026-08-26": "Bダイヤ", "2026-08-27": "Bダイヤ", "2026-08-28": "Bダイヤ", "2026-08-29": "Bダイヤ",
+        "2026-08-30": "運休", "2026-08-31": "Bダイヤ",
+        "2026-09-01": "Bダイヤ", "2026-09-02": "Bダイヤ", "2026-09-03": "Bダイヤ", "2026-09-04": "Bダイヤ", "2026-09-05": "Bダイヤ",
+        "2026-09-06": "運休",
+        "2026-09-07": "特別ダイヤ3", "2026-09-08": "特別ダイヤ3", "2026-09-09": "特別ダイヤ3", "2026-09-10": "特別ダイヤ3", "2026-09-11": "特別ダイヤ3",
+        "2026-09-12": "Bダイヤ", "2026-09-13": "運休",
+        "2026-09-14": "特別ダイヤ3", "2026-09-15": "特別ダイヤ3", "2026-09-16": "特別ダイヤ3", "2026-09-17": "特別ダイヤ3", "2026-09-18": "特別ダイヤ3",
+        "2026-09-19": "Bダイヤ", "2026-09-20": "運休", "2026-09-21": "運休", "2026-09-22": "運休", "2026-09-23": "運休",
+        "2026-09-24": "特別ダイヤ3", "2026-09-25": "特別ダイヤ3", "2026-09-26": "特別ダイヤ2",
+        "2026-09-27": "運休",
+        "2026-09-28": "Aダイヤ", "2026-09-29": "Aダイヤ", "2026-09-30": "Aダイヤ"
+    };
 
     function autoDetectSchedule() {
         const now = new Date();
@@ -277,39 +275,36 @@
         const mm = String(now.getMonth() + 1).padStart(2, '0');
         const dd = String(now.getDate()).padStart(2, '0');
         const dateString = `${yyyy}-${mm}-${dd}`;
-        const dayOfWeek = now.getDay();
+        
+        let determinedType = scheduleCalendar[dateString];
+        
+        const badge = document.getElementById('autoDetectBadge');
+        
+        isServiceSuspended = false;
+        isSpecialSchedule = false;
+        specialScheduleName = '';
 
-        let determinedType = 'weekday';
-
-        if (specialDays.includes(dateString)) {
-            determinedType = 'special';
-        } else if (publicHolidays.includes(dateString) || dayOfWeek === 0 || dayOfWeek === 6) {
-            determinedType = 'holiday';
+        if (!determinedType) {
+             // カレンダーにない日は仮にAダイヤとするか、運用に合わせて変更
+             determinedType = "Aダイヤ (予定表外)";
+             currentScheduleType = 'Aダイヤ';
+             badge.innerText = `本日は ${determinedType}`;
+             badge.style.backgroundColor = "#17a2b8";
+        } else if (determinedType === "運休") {
+             isServiceSuspended = true;
+             badge.innerText = "本日は 運休 です";
+             badge.style.backgroundColor = "#dc3545";
+        } else if (determinedType.includes("特別ダイヤ")) {
+             isSpecialSchedule = true;
+             specialScheduleName = determinedType;
+             badge.innerText = `本日は ${determinedType}（時刻未登録）`;
+             badge.style.backgroundColor = "#ffc107";
+             badge.style.color = "#212529";
+        } else {
+             currentScheduleType = determinedType;
+             badge.innerText = `本日は ${determinedType}`;
+             badge.style.backgroundColor = "#28a745";
         }
-
-        updateButtonStyles(determinedType);
-        currentScheduleType = determinedType;
-    }
-
-    function setScheduleType(type) {
-        // ※自動判別により他のボタンが押せなくなったため、この関数は実質呼ばれませんが残しています
-        currentScheduleType = type;
-        updateButtonStyles(type);
-        updateSchedule();
-    }
-
-    function updateButtonStyles(type) {
-        const types = ['weekday', 'holiday', 'special'];
-        types.forEach(t => {
-            const btn = document.getElementById('btn-' + t);
-            if (t === type) {
-                btn.classList.add('active');
-                btn.disabled = false; // 選ばれているものは有効
-            } else {
-                btn.classList.remove('active');
-                btn.disabled = true;  // それ以外はクリック不可にする
-            }
-        });
     }
 
     function updateClock() {
@@ -321,9 +316,25 @@
     }
 
     function updateSchedule() {
+        if (isServiceSuspended) {
+            document.getElementById("nextBus").innerText = "運休";
+            document.getElementById("followingBus").innerText = "-";
+            document.getElementById("countdown").innerText = "";
+            return;
+        }
+        
+        if (isSpecialSchedule) {
+            document.getElementById("nextBus").innerText = "公式HP確認";
+            document.getElementById("followingBus").innerText = "-";
+            document.getElementById("countdown").innerText = specialScheduleName;
+            return;
+        }
+
         const route = document.getElementById("routeSelect").value;
         const times = schedules[currentScheduleType][route];
         
+        if (!times) return; // 万が一データがない場合
+
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
